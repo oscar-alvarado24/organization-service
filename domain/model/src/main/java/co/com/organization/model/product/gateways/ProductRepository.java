@@ -7,4 +7,5 @@ public interface ProductRepository {
     Mono<String> createProduct(Mono<Product> product);
     Mono<Product> getProductById(String productId);
     Mono<String> changeProductName(String productId, String newName);
+    Mono<Void> validateExistence(String productId);
 }
