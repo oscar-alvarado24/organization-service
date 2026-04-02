@@ -10,4 +10,5 @@ public interface BranchRepository {
     Mono<String> deleteProductToBranch(String branchId, String productId);
     Mono<String> changeProductStock(String branchId, String productId, int stock);
     Mono<String> changeBranchName(String branchId, String newName);
+    Mono<Boolean> delete(String branchId);
 }
