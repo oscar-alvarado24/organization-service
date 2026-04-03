@@ -13,11 +13,13 @@ public class CreateBranchUseCase {
 
     Mono<String> createBranch(Mono<Branch> branch, String franchiseId) {
         return branch.flatMap(b ->
-                branchRepository.createBranch(branch)
-                        .then(franchiseRepository.addBranchToFranchise(franchiseId, b.getId()))
-                        .onErrorResume(e ->
-                                branchRepository.delete(b.getId())
-                                        .then(Mono.error(e))
+                branchRepository.createBranch(Mono.just(b))
+                        .flatMap(created ->
+                                franchiseRepository.addBranchToFranchise(franchiseId, b.getId())
+                                        .onErrorResume(e ->
+                                                branchRepository.delete(b.getId())
+                                                        .then(Mono.error(e))
+                                        )
                         )
         );
     }
