@@ -29,6 +29,7 @@ public class HighestStockProductPerBranchUseCase {
                         .build()
                 )
                 .collectList()
+                .filter(list -> !list.isEmpty())
                 .flatMapMany(branchTopProducts -> {
                     Map<String, List<BranchTopProduct>> productBranchMap = branchTopProducts.stream()
                             .collect(Collectors.groupingBy(BranchTopProduct::getProductId));
