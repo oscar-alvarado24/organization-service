@@ -50,6 +50,10 @@ subprojects {
                     "-XX:+AllowRedefinitionToAddDeleteMethods"
             ]
         }
+        jvmArgs += [
+                "-XX:+EnableDynamicAgentLoading",
+                "-Xshare:off"
+        ]
     }
 
     test.finalizedBy(project.tasks.jacocoTestReport)
@@ -70,7 +74,10 @@ subprojects {
         fileExtensionsToFilter.addAll('xml', 'orbit')
         junit5PluginVersion = '1.2.3'
         failWhenNoMutations = false
-        jvmArgs = ["-XX:+AllowRedefinitionToAddDeleteMethods"]
+        jvmArgs = [
+                "-XX:+AllowRedefinitionToAddDeleteMethods",
+                "-XX:+EnableDynamicAgentLoading"
+        ]
     }
 
     jacocoTestReport {
