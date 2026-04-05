@@ -76,7 +76,7 @@ class HighestStockProductPerBranchUseCaseTest {
 
         when(franchiseRepository.getFranchiseById(FRANCHISE_ID)).thenReturn(Mono.just(franchise));
         when(branchRepository.getBranchTopProductList(any())).thenReturn(Flux.just(branch1, branch2));
-        when(productRepository.getProductsForIdList(any())).thenReturn(Flux.just(product1, product2));
+        when(productRepository.getProductsByIdList(any())).thenReturn(Flux.just(product1, product2));
 
         StepVerifier.create(useCase.execute(FRANCHISE_ID))
                 .expectNextMatches(btp ->
@@ -91,7 +91,7 @@ class HighestStockProductPerBranchUseCaseTest {
 
         verify(franchiseRepository, times(1)).getFranchiseById(FRANCHISE_ID);
         verify(branchRepository, times(1)).getBranchTopProductList(any());
-        verify(productRepository, times(1)).getProductsForIdList(any());
+        verify(productRepository, times(1)).getProductsByIdList(any());
     }
 
     @Test
@@ -112,13 +112,13 @@ class HighestStockProductPerBranchUseCaseTest {
 
         when(franchiseRepository.getFranchiseById(FRANCHISE_ID)).thenReturn(Mono.just(franchise));
         when(branchRepository.getBranchTopProductList(any())).thenReturn(Flux.just(branch1, branch2));
-        when(productRepository.getProductsForIdList(any())).thenReturn(Flux.just(product1));
+        when(productRepository.getProductsByIdList(any())).thenReturn(Flux.just(product1));
 
         StepVerifier.create(useCase.execute(FRANCHISE_ID))
                 .expectNextCount(2)
                 .verifyComplete();
 
-        verify(productRepository, times(1)).getProductsForIdList(any());
+        verify(productRepository, times(1)).getProductsByIdList(any());
     }
 
     // ------------------------------------------------------------------ //
@@ -140,7 +140,7 @@ class HighestStockProductPerBranchUseCaseTest {
 
         verify(franchiseRepository, times(1)).getFranchiseById(FRANCHISE_ID);
         verify(branchRepository, times(1)).getBranchTopProductList(any());
-        verify(productRepository, never()).getProductsForIdList(any());
+        verify(productRepository, never()).getProductsByIdList(any());
     }
 
     @Test
@@ -164,7 +164,7 @@ class HighestStockProductPerBranchUseCaseTest {
                 .verifyComplete();
 
         verify(branchRepository, times(1)).getBranchTopProductList(any());
-        verify(productRepository, never()).getProductsForIdList(any());
+        verify(productRepository, never()).getProductsByIdList(any());
     }
 
     @Test
@@ -176,7 +176,7 @@ class HighestStockProductPerBranchUseCaseTest {
 
         verify(franchiseRepository, times(1)).getFranchiseById(FRANCHISE_ID);
         verify(branchRepository, never()).getBranchTopProductList(any());
-        verify(productRepository, never()).getProductsForIdList(any());
+        verify(productRepository, never()).getProductsByIdList(any());
     }
 
     // ------------------------------------------------------------------ //
@@ -196,7 +196,7 @@ class HighestStockProductPerBranchUseCaseTest {
 
         verify(franchiseRepository, times(1)).getFranchiseById(FRANCHISE_ID);
         verify(branchRepository, never()).getBranchTopProductList(any());
-        verify(productRepository, never()).getProductsForIdList(any());
+        verify(productRepository, never()).getProductsByIdList(any());
     }
 
     @Test
@@ -212,7 +212,7 @@ class HighestStockProductPerBranchUseCaseTest {
                 .verify();
 
         verify(branchRepository, times(1)).getBranchTopProductList(any());
-        verify(productRepository, never()).getProductsForIdList(any());
+        verify(productRepository, never()).getProductsByIdList(any());
     }
 
     @Test
@@ -227,13 +227,13 @@ class HighestStockProductPerBranchUseCaseTest {
 
         when(franchiseRepository.getFranchiseById(FRANCHISE_ID)).thenReturn(Mono.just(franchise));
         when(branchRepository.getBranchTopProductList(any())).thenReturn(Flux.just(branch1));
-        when(productRepository.getProductsForIdList(any())).thenReturn(Flux.error(error));
+        when(productRepository.getProductsByIdList(any())).thenReturn(Flux.error(error));
 
         StepVerifier.create(useCase.execute(FRANCHISE_ID))
                 .expectErrorMatches(ex -> ex instanceof RuntimeException &&
                         ex.getMessage().equals("Product DB error"))
                 .verify();
 
-        verify(productRepository, times(1)).getProductsForIdList(any());
+        verify(productRepository, times(1)).getProductsByIdList(any());
     }
 }

@@ -1,0 +1,20 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/organization
+    username: postgres
+    password: ${PASSWORD_DB}
+    initialization-mode: always
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      continue-on-error: false
+adapters:
+  r2dbc:
+    host: localhost
+    port: 5432
+    database: organization
+    schema: public
+    username: postgres
+    password: ${PASSWORD_DB}
+LOG_LEVEL: debug

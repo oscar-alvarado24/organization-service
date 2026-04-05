@@ -8,5 +8,5 @@ public interface ProductRepository {
     Mono<String> createProduct(Mono<Product> product);
     Mono<String> changeProductName(String productId, String newName);
     Mono<Void> validateExistence(String productId);
-    Flux<Product> getProductsForIdList(Flux<String> idList);
+    Flux<Product> getProductsByIdList(Flux<String> idList);
 }

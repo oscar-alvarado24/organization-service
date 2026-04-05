@@ -47,7 +47,6 @@ class ModificationProductInBranchUseCaseTest {
 
     @Test
     void addProductToBranchShouldPropagateErrorWhenProductValidationFails() {
-        when(branchRepository.addProductToBranch(BRANCH_ID, PRODUCT_ID)).thenReturn(Mono.empty());
         RuntimeException error = new RuntimeException("Product not found");
 
         when(productRepository.validateExistence(PRODUCT_ID)).thenReturn(Mono.error(error));
@@ -58,6 +57,7 @@ class ModificationProductInBranchUseCaseTest {
                 .verify();
 
         verify(productRepository, times(1)).validateExistence(PRODUCT_ID);
+        verify(branchRepository, never()).addProductToBranch(any(), any());
     }
 
     @Test

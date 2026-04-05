@@ -34,7 +34,7 @@ public class HighestStockProductPerBranchUseCase {
                     Map<String, List<BranchTopProduct>> productBranchMap = branchTopProducts.stream()
                             .collect(Collectors.groupingBy(BranchTopProduct::getProductId));
 
-                    return productRepository.getProductsForIdList(Flux.fromIterable(productBranchMap.keySet()))
+                    return productRepository.getProductsByIdList(Flux.fromIterable(productBranchMap.keySet()))
                             .flatMap(product ->
                                     Flux.fromIterable(
                                             productBranchMap.get(product.getId()).stream()

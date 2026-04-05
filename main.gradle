@@ -112,7 +112,8 @@ tasks.register('jacocoMergedReport', JacocoReport) {
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs = [
-            '-Amapstruct.suppressGeneratorTimestamp=true'
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            "-Xlint:unchecked"
     ]
 }
 
@@ -142,5 +143,5 @@ pitestReportAggregate {
 }
 
 tasks.named('wrapper') {
-    gradleVersion = '9.4.1'
+    gradleVersion = '9.3.1'
 }

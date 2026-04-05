@@ -11,7 +11,7 @@ public class ModificationProductInBranchUseCase {
     private final ProductRepository productRepository;
     Mono<String> addProductToBranch(String branchId, String productId){
         return productRepository.validateExistence(productId)
-                .then(branchRepository.addProductToBranch(branchId,productId));
+                .then(Mono.defer(() ->branchRepository.addProductToBranch(branchId,productId)));
     }
 
     Mono<String> deleteProductToBranch(String branchId, String productId){
