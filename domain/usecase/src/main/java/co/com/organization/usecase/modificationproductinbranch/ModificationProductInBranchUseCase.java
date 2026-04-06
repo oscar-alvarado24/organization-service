@@ -1,5 +1,6 @@
 package co.com.organization.usecase.modificationproductinbranch;
 
+import co.com.organization.model.branch.ProductBranch;
 import co.com.organization.model.branch.gateways.BranchRepository;
 import co.com.organization.model.product.gateways.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +10,11 @@ import reactor.core.publisher.Mono;
 public class ModificationProductInBranchUseCase {
     private final BranchRepository branchRepository;
     private final ProductRepository productRepository;
-    Mono<String> addProductToBranch(String branchId, String productId){
-        return productRepository.validateExistence(productId)
-                .then(Mono.defer(() ->branchRepository.addProductToBranch(branchId,productId)));
+    Mono<String> addProductToBranch(String branchId, Mono<ProductBranch> product) {
+        return product.flatMap(productBranch ->
+                productRepository.validateExistence(productBranch.getId())
+                        .then(Mono.defer(() -> branchRepository.addProductToBranch(branchId, productBranch)))
+        );
     }
 
     Mono<String> deleteProductToBranch(String branchId, String productId){
