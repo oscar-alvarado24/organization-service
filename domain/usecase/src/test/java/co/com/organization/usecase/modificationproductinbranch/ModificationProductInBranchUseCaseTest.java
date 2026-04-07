@@ -96,13 +96,13 @@ class ModificationProductInBranchUseCaseTest {
 
     @Test
     void deleteProductToBranchShouldReturnProductIdWhenDeleteSucceeds() {
-        when(branchRepository.deleteProductToBranch(BRANCH_ID, PRODUCT_ID)).thenReturn(Mono.just(PRODUCT_ID));
+        when(branchRepository.deleteProductOfBranch(BRANCH_ID, PRODUCT_ID)).thenReturn(Mono.just(PRODUCT_ID));
 
         StepVerifier.create(useCase.deleteProductToBranch(BRANCH_ID, PRODUCT_ID))
                 .expectNext(PRODUCT_ID)
                 .verifyComplete();
 
-        verify(branchRepository, times(1)).deleteProductToBranch(BRANCH_ID, PRODUCT_ID);
+        verify(branchRepository, times(1)).deleteProductOfBranch(BRANCH_ID, PRODUCT_ID);
         verify(productRepository, never()).validateExistence(any());
     }
 
@@ -110,24 +110,24 @@ class ModificationProductInBranchUseCaseTest {
     void deleteProductToBranchShouldPropagateErrorWhenRepositoryFails() {
         RuntimeException error = new RuntimeException("Delete failed");
 
-        when(branchRepository.deleteProductToBranch(BRANCH_ID, PRODUCT_ID)).thenReturn(Mono.error(error));
+        when(branchRepository.deleteProductOfBranch(BRANCH_ID, PRODUCT_ID)).thenReturn(Mono.error(error));
 
         StepVerifier.create(useCase.deleteProductToBranch(BRANCH_ID, PRODUCT_ID))
                 .expectErrorMatches(ex -> ex instanceof RuntimeException &&
                         ex.getMessage().equals("Delete failed"))
                 .verify();
 
-        verify(branchRepository, times(1)).deleteProductToBranch(BRANCH_ID, PRODUCT_ID);
+        verify(branchRepository, times(1)).deleteProductOfBranch(BRANCH_ID, PRODUCT_ID);
     }
 
     @Test
     void deleteProductToBranchShouldCompleteEmptyWhenRepositoryReturnsEmpty() {
-        when(branchRepository.deleteProductToBranch(BRANCH_ID, PRODUCT_ID)).thenReturn(Mono.empty());
+        when(branchRepository.deleteProductOfBranch(BRANCH_ID, PRODUCT_ID)).thenReturn(Mono.empty());
 
         StepVerifier.create(useCase.deleteProductToBranch(BRANCH_ID, PRODUCT_ID))
                 .verifyComplete();
 
-        verify(branchRepository, times(1)).deleteProductToBranch(BRANCH_ID, PRODUCT_ID);
+        verify(branchRepository, times(1)).deleteProductOfBranch(BRANCH_ID, PRODUCT_ID);
     }
 
     // ================================================================== //

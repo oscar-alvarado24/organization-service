@@ -1,14 +1,13 @@
-##Spring Configuration
 server:
   port: 8080
 spring:
   application:
-    name: franchise
+    name: "franchise"
   devtools:
     add-properties: false
   profiles:
-    include: ${ENVIRONMENT}
-    active: ${ENVIRONMENT}
+    include: "${ENVIRONMENT}"
+    active: "${ENVIRONMENT}"
 management:
   endpoints:
     web:
@@ -18,3 +17,6 @@ management:
     health:
       probes:
         enabled: true
+aws:
+  dynamodb:
+    endpoint: "http://localhost:8000"

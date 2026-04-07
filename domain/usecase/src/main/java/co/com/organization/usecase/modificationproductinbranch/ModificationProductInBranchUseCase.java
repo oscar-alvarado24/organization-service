@@ -18,7 +18,7 @@ public class ModificationProductInBranchUseCase {
     }
 
     Mono<String> deleteProductToBranch(String branchId, String productId){
-        return branchRepository.deleteProductToBranch(branchId, productId);
+        return branchRepository.deleteProductOfBranch(branchId, productId);
     }
 
     Mono<String> changeStockProduct (String branchId, String productId, int newStock){
