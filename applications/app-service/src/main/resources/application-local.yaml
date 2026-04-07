@@ -17,4 +17,13 @@ adapters:
     schema: public
     username: postgres
     password: ${PASSWORD_DB}
+  aws:
+    region: us-east-1
+    session:
+      name:${AWS_SESSION_NAME}
+    dynamodb:
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+      role: ${DYNAMO_ROLE}
+      endpoint: ${DYNAMO_ENDPOINT}
 LOG_LEVEL: debug

@@ -7,13 +7,11 @@ import org.springframework.context.annotation.Profile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.WebIdentityTokenFileCredentialsProvider;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
 import software.amazon.awssdk.metrics.MetricPublisher;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.sts.StsClient;
-import software.amazon.awssdk.services.sts.StsClientBuilder;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 
 import java.net.URI;
@@ -23,8 +21,8 @@ public class DynamoDBConfig {
 
     @Bean
     @Profile({"local"})
-    public DynamoDbAsyncClient amazonDynamoDB(@Value("${aws.dynamodb.endpoint}") String endpoint,
-                                              @Value("${aws.region}") String region,
+    public DynamoDbAsyncClient amazonDynamoDB(@Value("${adapters.aws.dynamodb.endpoint}") String endpoint,
+                                              @Value("${adapters.aws.region}") String region,
                                               MetricPublisher publisher) {
         return DynamoDbAsyncClient.builder()
                 .credentialsProvider(ProfileCredentialsProvider.create("default"))
@@ -38,11 +36,11 @@ public class DynamoDBConfig {
     @Profile({"dev", "cer", "pdn"})
     public DynamoDbAsyncClient amazonDynamoDBAsync(
             MetricPublisher publisher,
-            @Value("${aws.region}") String region,
-            @Value("${aws.dynamodb.access-key}") String accessKey,
-            @Value("${aws.dynamodb.secret-key}") String secretKey,
-            @Value("${aws.dynamodb.role}") String role,
-            @Value("${aws.session.name}") String sessionName) {
+            @Value("${adapters.aws.region}") String region,
+            @Value("${adapters.aws.dynamodb.access-key}") String accessKey,
+            @Value("${adapters.aws.dynamodb.secret-access-key}") String secretKey,
+            @Value("${adapters.aws.dynamodb.role}") String role,
+            @Value("${adapters.aws.session.name}") String sessionName) {
         return DynamoDbAsyncClient.builder()
                 .credentialsProvider(createCredential(accessKey, secretKey, role, sessionName, Region.of(region)))
                 .region(Region.of(region))
