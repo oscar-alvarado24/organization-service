@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Branch {
-    private String id;
+    private String branchId;
     private String name;
     private String address;
     private String phone;

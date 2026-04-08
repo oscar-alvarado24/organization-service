@@ -27,4 +27,7 @@ public final class BranchConstants {
     public static final String MSG_ERROR_CHANGE_BRANCH_NAME = "Error al actualizar el nombre de la sucursal";
     public static final String MSG_ERROR_DELETE_BRANCH = "Error al eliminar la sucursal";
     public static final String LOG_ERROR_DELETE_BRANCH = "Error al eliminar la sucursal con id {}: ";
+    public static final String MSG_ERROR_PRODUCT_NOT_FOUND = "Error, producto no encontrado en la sucursal";
+    public static final String MSG_ERROR_BRANCH_NOT_FOUND = "Error, sucursal no encontrada";
+    public static final String MSG_ERROR_SAVING_BRANCH = "Error al guardar la sucursal";
 }

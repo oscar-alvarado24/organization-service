@@ -34,7 +34,7 @@ public interface BranchEntityMapper {
         entities.forEach(entity -> {
 
             if (entity.getSk().equals(BranchConstants.BRANCH_METADATA_LABEL)) {
-                branch.setId(entity.getBranchId());
+                branch.setBranchId(entity.getBranchId());
                 branch.setName(entity.getName());
                 branch.setAddress(entity.getAddress());
                 branch.setPhone(entity.getPhone());

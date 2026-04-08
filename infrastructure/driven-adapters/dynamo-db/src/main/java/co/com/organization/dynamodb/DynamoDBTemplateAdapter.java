@@ -4,6 +4,7 @@ import co.com.organization.dynamodb.entity.BranchEntity;
 import co.com.organization.dynamodb.helper.BranchConstants;
 import co.com.organization.dynamodb.helper.TemplateAdapterOperations;
 import co.com.organization.dynamodb.mapper.BranchEntityMapper;
+import co.com.organization.exception.SaveBranchFailed;
 import co.com.organization.model.branch.Branch;
 import co.com.organization.model.branch.ProductBranch;
 import lombok.extern.slf4j.Slf4j;
@@ -48,11 +49,19 @@ public class DynamoDBTemplateAdapter extends TemplateAdapterOperations<BranchEnt
                 .map(mapper::toBranchList);
     }
 
+    @SuppressWarnings("PointlessBooleanExpression")
     public Mono<Boolean> saveBranch(Mono<Branch> branch) {
         return branch
                 .map(mapper::toBranchEntity)
                 .flatMap(this::save)
-                .hasElement();
+                .hasElement()
+                .flatMap(bool->{
+                    if (Boolean.FALSE.equals(bool)){
+                        return Mono.error(new SaveBranchFailed(BranchConstants.MSG_ERROR_SAVING_BRANCH));
+                    }
+                    return Mono.just(Boolean.TRUE);
+                });
+
     }
 
     public Mono<String> addProductToBranch(String branchId, ProductBranch product) {

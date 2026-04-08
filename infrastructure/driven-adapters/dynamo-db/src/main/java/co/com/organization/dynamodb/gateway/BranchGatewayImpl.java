@@ -3,12 +3,14 @@ package co.com.organization.dynamodb.gateway;
 import co.com.organization.dynamodb.DynamoDBTemplateAdapter;
 import co.com.organization.dynamodb.helper.BranchConstants;
 import co.com.organization.exception.AddProductToBranchFailed;
+import co.com.organization.exception.BranchNotFoundException;
 import co.com.organization.exception.ChangeBranchNameFailed;
 import co.com.organization.exception.ChangeStockProductFailed;
 import co.com.organization.exception.CreateBranchFailed;
 import co.com.organization.exception.DeleteBranchFailed;
 import co.com.organization.exception.DeleteProductOfBranchFailed;
 import co.com.organization.exception.GetTopProductsFailed;
+import co.com.organization.exception.ProductNotFoundException;
 import co.com.organization.model.branch.Branch;
 import co.com.organization.model.branch.ProductBranch;
 import co.com.organization.model.branch.gateways.BranchRepository;
@@ -62,7 +64,9 @@ public class BranchGatewayImpl implements BranchRepository {
     @Override
     public Mono<String> changeProductStock(String branchId, String productId, int stock) {
         return repository.changeProductStock(branchId, productId, stock)
+                .switchIfEmpty(Mono.error(new ProductNotFoundException(BranchConstants.MSG_ERROR_PRODUCT_NOT_FOUND)))
                 .onErrorResume(error ->{
+                    if (error instanceof ProductNotFoundException) return Mono.error(error);
                     log.error(BranchConstants.LOG_ERROR_CHANGE_STOCK_PRODUCT, productId, branchId, error);
                     return Mono.error(new ChangeStockProductFailed(BranchConstants.MSG_ERROR_CHANGE_STOCK_PRODUCT));
                 });
@@ -71,7 +75,9 @@ public class BranchGatewayImpl implements BranchRepository {
     @Override
     public Mono<String> changeBranchName(String branchId, String newName) {
         return repository.changeBranchName(branchId, newName)
+                .switchIfEmpty(Mono.error(new BranchNotFoundException(BranchConstants.MSG_ERROR_BRANCH_NOT_FOUND)))
                 .onErrorResume(error -> {
+                    if (error instanceof BranchNotFoundException) return Mono.error(error);
                     log.error(BranchConstants.LOG_ERROR_CHANGE_BRANCH_NAME, branchId, error);
                     return Mono.error(new ChangeBranchNameFailed(BranchConstants.MSG_ERROR_CHANGE_BRANCH_NAME));
                 });
