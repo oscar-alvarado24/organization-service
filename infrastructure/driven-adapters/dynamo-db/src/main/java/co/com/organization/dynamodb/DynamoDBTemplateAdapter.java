@@ -158,4 +158,11 @@ public class DynamoDBTemplateAdapter extends TemplateAdapterOperations<BranchEnt
                     return save(updatedBranch).thenReturn(BranchConstants.MSG_CHANGE_BRANCH_NAME_SUCCESSFULLY);
                 });
     }
+
+    public Mono<Boolean> validateExistence(String branchId) {
+        return exists(Key.builder()
+                .partitionValue(branchId)
+                .sortValue(BranchConstants.BRANCH_METADATA_LABEL)
+                .build());
+    }
 }

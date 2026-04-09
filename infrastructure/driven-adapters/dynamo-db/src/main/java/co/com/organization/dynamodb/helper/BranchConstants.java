@@ -30,4 +30,6 @@ public final class BranchConstants {
     public static final String MSG_ERROR_PRODUCT_NOT_FOUND = "Error, producto no encontrado en la sucursal";
     public static final String MSG_ERROR_BRANCH_NOT_FOUND = "Error, sucursal no encontrada";
     public static final String MSG_ERROR_SAVING_BRANCH = "Error al guardar la sucursal";
+    public static final String MSG_ERROR_BRANCH_ALREADY_EXISTS = "Error, la sucursal ya existe";
+    public static final String LOG_ERROR_BRANCH_ALREADY_EXISTS = "Error, la sucursal con id {} ya existe: ";
 }

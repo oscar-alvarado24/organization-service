@@ -3,6 +3,7 @@ package co.com.organization.dynamodb.gateway;
 import co.com.organization.dynamodb.DynamoDBTemplateAdapter;
 import co.com.organization.dynamodb.helper.BranchConstants;
 import co.com.organization.exception.AddProductToBranchFailed;
+import co.com.organization.exception.BranchAlreadyExistException;
 import co.com.organization.exception.BranchNotFoundException;
 import co.com.organization.exception.ChangeBranchNameFailed;
 import co.com.organization.exception.ChangeStockProductFailed;
@@ -99,14 +100,14 @@ class BranchGatewayImplTest {
     // ================================================================== //
     //  createBranch
     // ================================================================== //
-
     @Nested
     @DisplayName("createBranch")
     class CreateBranch {
 
         @Test
-        @DisplayName("should return true when repository succeeds")
+        @DisplayName("should return true when branch does not exist and is saved successfully")
         void createBranchReturnSuccessfullyMessage() {
+            when(repository.validateExistence(BRANCH_ID)).thenReturn(Mono.just(false));
             when(repository.saveBranch(any())).thenReturn(Mono.just(true));
 
             StepVerifier.create(gateway.createBranch(Mono.just(BRANCH)))
@@ -115,18 +116,31 @@ class BranchGatewayImplTest {
         }
 
         @Test
-        @DisplayName("should complete empty when repository returns empty")
-        void createBranchWithEmptyRepositoryResponseCompletesEmpty() {
-            when(repository.saveBranch(any())).thenReturn(Mono.empty());
+        @DisplayName("should throw BranchAlreadyExistException when branch already exists")
+        void createBranchWithExistingBranchIdThrowsBranchAlreadyExistException() {
+            when(repository.validateExistence(BRANCH_ID)).thenReturn(Mono.just(true));
 
             StepVerifier.create(gateway.createBranch(Mono.just(BRANCH)))
-                    .verifyComplete();
+                    .expectError(BranchAlreadyExistException.class)
+                    .verify();
         }
 
         @Test
-        @DisplayName("should throw CreateBranchFailed when repository fails")
+        @DisplayName("should throw CreateBranchFailed when repository fails on save")
         void createBranchWithErrorResponseInRepositoryThrowsCreateBranchFailed() {
+            when(repository.validateExistence(BRANCH_ID)).thenReturn(Mono.just(false));
             when(repository.saveBranch(any()))
+                    .thenReturn(Mono.error(new RuntimeException("DB error")));
+
+            StepVerifier.create(gateway.createBranch(Mono.just(BRANCH)))
+                    .expectError(CreateBranchFailed.class)
+                    .verify();
+        }
+
+        @Test
+        @DisplayName("should throw CreateBranchFailed when repository fails on validate")
+        void createBranchWithErrorOnValidationThrowsCreateBranchFailed() {
+            when(repository.validateExistence(BRANCH_ID))
                     .thenReturn(Mono.error(new RuntimeException("DB error")));
 
             StepVerifier.create(gateway.createBranch(Mono.just(BRANCH)))

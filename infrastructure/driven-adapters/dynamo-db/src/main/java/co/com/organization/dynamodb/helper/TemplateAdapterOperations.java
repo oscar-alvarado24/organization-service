@@ -31,6 +31,10 @@ public abstract class TemplateAdapterOperations< E> {
         table = dynamoDbEnhancedAsyncClient.table(tableName, TableSchema.fromBean(dataClass));
     }
 
+    public Mono<Boolean> exists(Key key) {
+        return Mono.fromFuture(table.getItem(key)).hasElement();
+    }
+
     public Mono<E> getItem(Key key) {
         return Mono.fromFuture(table.getItem(key));
     }

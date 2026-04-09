@@ -3,6 +3,7 @@ package co.com.organization.dynamodb.gateway;
 import co.com.organization.dynamodb.DynamoDBTemplateAdapter;
 import co.com.organization.dynamodb.helper.BranchConstants;
 import co.com.organization.exception.AddProductToBranchFailed;
+import co.com.organization.exception.BranchAlreadyExistException;
 import co.com.organization.exception.BranchNotFoundException;
 import co.com.organization.exception.ChangeBranchNameFailed;
 import co.com.organization.exception.ChangeStockProductFailed;
@@ -35,11 +36,22 @@ public class BranchGatewayImpl implements BranchRepository {
                 });
     }
 
+    @SuppressWarnings("PointlessBooleanExpression")
     @Override
     public Mono<Boolean> createBranch(Mono<Branch> branch) {
-        return repository.saveBranch(branch)
-                .onErrorResume(error->{
-                    log.error(BranchConstants.LOG_ERROR_CREATING_BRANCH,error);
+
+        return branch.flatMap(br ->repository.validateExistence(br.getBranchId())
+                .flatMap(exists -> {
+                    if (Boolean.TRUE.equals(exists)) {
+                        log.error(BranchConstants.LOG_ERROR_BRANCH_ALREADY_EXISTS, br.getBranchId());
+                        return Mono.error(new BranchAlreadyExistException(BranchConstants.MSG_ERROR_BRANCH_ALREADY_EXISTS));
+                    }
+                    return repository.saveBranch(Mono.just(br));
+
+                }))
+                .onErrorResume(error -> {
+                    if (error instanceof BranchAlreadyExistException) return Mono.error(error);
+                    log.error(BranchConstants.LOG_ERROR_CREATING_BRANCH, error);
                     return Mono.error(new CreateBranchFailed(BranchConstants.MSG_ERROR_CREATING_BRANCH));
                 });
     }
